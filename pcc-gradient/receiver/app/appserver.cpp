@@ -105,16 +105,6 @@ int main(int argc, char* argv[])
       return 0;
    }
 
-   // If duration specified, spawn a watcher thread to exit when time is up
-   if (durationSeconds > 0) {
-      thread([durationSeconds, serv]() {
-         // sleep for the given duration
-         this_thread::sleep_for(chrono::seconds(durationSeconds));
-         //cout << "Duration of " << durationSeconds << " seconds reached, shutting down server." << endl;
-         UDT::close(serv);
-         exit(0);
-      }).detach();
-   }
 
    // Accept loop
    sockaddr_storage clientaddr;
@@ -135,6 +125,16 @@ int main(int argc, char* argv[])
                   clientservice, sizeof(clientservice),
                   NI_NUMERICHOST|NI_NUMERICSERV);
       //cout << "new connection: " << clienthost << ":" << clientservice << endl;
+         // If duration specified, spawn a watcher thread to exit when time is up
+      if (durationSeconds > 0) {
+         thread([durationSeconds, serv]() {
+            // sleep for the given duration
+            this_thread::sleep_for(chrono::seconds(durationSeconds));
+            //cout << "Duration of " << durationSeconds << " seconds reached, shutting down server." << endl;
+            UDT::close(serv);
+            exit(0);
+         }).detach();
+      }
 
       #ifndef WIN32
          pthread_t rcvthread;

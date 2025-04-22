@@ -399,7 +399,7 @@ class PCC : public CCC {
                 recent_end_stat.rtt = rtt;
                 recent_end_stat.monitor = endMonitor;
             } else {
-                cout<<"deviation immuned until "<<deviation_immune_monitor<<"currently end"<<endMonitor<<endl;
+               //cout<<"deviation immuned until "<<deviation_immune_monitor<<"currently end"<<endMonitor<<endl;
             }
         }
         do {
@@ -556,7 +556,7 @@ class PCC : public CCC {
 
 
                     if((loss_down - loss_up) >2 && decision>0 && loss_up !=0 && overall_loss_rate>=0.05) {
-                       cout<<"hit"<<endl;
+                       //cout<<"hit"<<endl;
                        if(double_check >0) {
                           decision = 0;
                           double_check --;
@@ -893,9 +893,9 @@ class PCC : public CCC {
 
 
         if (force_change) {
-            cout << "avg. gradient = " << avg_gradient() << endl;
-            cout << "rate = " << rate() << endl;
-            cout << "computed change: " << change << endl;
+           //cout << "avg. gradient = " << avg_gradient() << endl;
+           //cout << "rate = " << rate() << endl;
+           //cout << "computed change: " << change << endl;
         }
 #ifdef DEBUG
         //cerr<<"change before force to min change is "<< change<<endl;
