@@ -15,7 +15,7 @@
 #include <mutex>
 #include <thread>
 #include <stdlib.h>
-#define DEBUG
+
 #define MAX_MONITOR 500
 using namespace std;
 
@@ -917,7 +917,7 @@ class PCC : public CCC {
 
         prev_change_ = change;
 
-        if (change == 0) cout << "Change is zero!" << endl;
+        //if (change == 0) cout << "Change is zero!" << endl;
 #ifdef DEBUG
         cerr<<"change is "<<change<<endl;
 #endif
