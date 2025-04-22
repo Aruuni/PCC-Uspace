@@ -28,6 +28,13 @@ DWORD WINAPI monitor(LPVOID);
 
 static atomic<bool> stopRequested(false);
 
+/* Added: configurable monitor interval (default 1 s) */
+#ifndef WIN32
+static int monitor_interval_us = 1000000; // microseconds
+#else
+static int monitor_interval_ms = 1000;    // milliseconds
+#endif
+
 double rate_sum = 0;
 double rtt_sum = 0;
 double avg_loss_rate = 0;
@@ -55,7 +62,9 @@ void intHandler(int)
 int main(int argc, char* argv[])
 {
     int durationSeconds = -1;
+    double intervalSeconds = 1.0; // default
     vector<char*> parms;
+
     for (int i = 1; i < argc; ++i) {
         if (0 == strcmp(argv[i], "--duration")) {
             if (i + 1 < argc) {
@@ -66,23 +75,42 @@ int main(int argc, char* argv[])
                 }
             } else {
                 cerr << "usage: " << argv[0]
-                     << " [--duration seconds] server_ip server_port"
+                     << " [--duration seconds] [--interval seconds] server_ip server_port"
                         " [factor] [step] [alpha] [beta] [exponent] [poly_utility]"
                      << endl;
                 return 0;
             }
-        } else {
+        }
+        else if (0 == strcmp(argv[i], "--interval")) {
+            if (i + 1 < argc) {
+                intervalSeconds = atof(argv[++i]);
+                if (intervalSeconds <= 0) {
+                    cerr << "Invalid interval: " << argv[i] << endl;
+                    return 0;
+                }
+            } else {
+                cerr << "Missing value for --interval" << endl;
+                return 0;
+            }
+        }
+        else {
             parms.push_back(argv[i]);
         }
     }
 
     if (parms.size() < 2 || 0 == atoi(parms[1])) {
         cout << "usage: " << argv[0]
-             << " [--duration seconds] server_ip server_port"
+             << " [--duration seconds] [--interval seconds] server_ip server_port"
                 " [factor] [step] [alpha] [beta] [exponent] [poly_utility]"
              << endl;
         return 0;
     }
+
+#ifndef WIN32
+    monitor_interval_us = static_cast<int>(intervalSeconds * 1e6);
+#else
+    monitor_interval_ms = static_cast<int>(intervalSeconds * 1e3);
+#endif
 
     signal(SIGINT, intHandler);
 
@@ -194,13 +222,13 @@ DWORD WINAPI monitor(LPVOID s)
 {
     UDTSOCKET u = *(UDTSOCKET*)s;
     UDT::TRACEINFO perf;
-    cout << "time,bandwidth,rtt,cwnd,total_packets,packets_lost" << endl;
+    cout << "time,bandwidth,srtt,cwnd,total_packets,retr,lost" << endl;
     unsigned int i = 0;
     while (!stopRequested) {
         #ifndef WIN32
-           usleep(1000000);
+           usleep(monitor_interval_us);
         #else
-           Sleep(1000);
+           Sleep(monitor_interval_ms);
         #endif
         if (++i > 10000) break;
         if (UDT::ERROR == UDT::perfmon(u, &perf)) {
@@ -213,13 +241,12 @@ DWORD WINAPI monitor(LPVOID s)
             << perf.msRTT                   << "," 
             << perf.pktCongestionWindow     << ","
             << perf.pktSent                 << ","  
-            << perf.pktSndLoss
-            <<
-        endl;
+            << perf.pktRetrans              << ","  
+            << perf.pktSndLoss           << endl;
     }
-    #ifndef WIN32
-       return NULL;
-    #else
-       return 0;
-    #endif
+#ifndef WIN32
+    return NULL;
+#else
+    return 0;
+#endif
 }
