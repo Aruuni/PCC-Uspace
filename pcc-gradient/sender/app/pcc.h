@@ -107,8 +107,8 @@ class PCC : public CCC {
         double_check = 1;
         loss_ignore_count = 50;
         last_stop_monitor = -1;
-        //cerr << "new Code!!!" << endl;
-        //cerr << "configuration: alpha = " << alpha_ << ", beta = " << beta_   <<
+        ////cerr << "new Code!!!" << endl;
+        ////cerr << "configuration: alpha = " << alpha_ << ", beta = " << beta_   <<
         //     ", exponent = " << exponent_ <<
         //     ", factor = " << factor_ << ", step = " << step_ << endl;
 
@@ -141,7 +141,7 @@ class PCC : public CCC {
     virtual bool onTimeout(int total, int loss, double in_time, int current,
                            int endMonitor, double rtt) {
 #ifdef DEBUG
-        cerr<<"Timeout happens to monitor "<<endMonitor<<endl;
+        //cerr<<"Timeout happens to monitor "<<endMonitor<<endl;
 #endif
         //if(!(deviation_immune_monitor != -1 && deviation_immune_monitor != endMonitor)) {
         deviation_immune_monitor = -1;
@@ -169,7 +169,7 @@ class PCC : public CCC {
                 divider *= 2;
             }
 #ifdef DEBUG
-            cerr<<"Diverder is "<<divider<<endl;
+            //cerr<<"Diverder is "<<divider<<endl;
 #endif
             setRate(kHibernateRate/divider, true);
             guess_measurement_bucket.clear();
@@ -188,7 +188,7 @@ class PCC : public CCC {
                                 int& mss, double& length_amplifier) {
         ConnectionState old_state;
 #ifdef DEBUG
-        cerr<<"Monitor "<<current_monitor<<" starts"<<endl;
+        //cerr<<"Monitor "<<current_monitor<<" starts"<<endl;
 #endif
         length_amplifier = loss_control_amplifier;
         do {
@@ -202,7 +202,7 @@ class PCC : public CCC {
                 base_rate_ = rate()* slow_start_factor_;
                 setRate(base_rate_);
 #ifdef DEBUG
-                cerr<<"slow starting of monitor"<<current_monitor<<endl;
+                //cerr<<"slow starting of monitor"<<current_monitor<<endl;
 #endif
                 break;
             case SEARCH:
@@ -210,7 +210,7 @@ class PCC : public CCC {
                    base_rate_ = kMinRateMbps;
  
 #ifdef DEBUG
-                cerr<<"Monitor "<<current_monitor<<"is in search state"<<endl;
+                //cerr<<"Monitor "<<current_monitor<<"is in search state"<<endl;
 #endif
                 state_ = RECORDING;
                 search(current_monitor);
@@ -223,13 +223,13 @@ class PCC : public CCC {
                 mss = 1500;
                 if(guess_time_ != number_of_probes_) {
 #ifdef DEBUG
-                    cerr<<"Monitor "<<current_monitor<<"is in recording state "<<guess_time_<<"th trial with rate of"<<guess_measurement_bucket[guess_time_].rate<<endl;
+                    //cerr<<"Monitor "<<current_monitor<<"is in recording state "<<guess_time_<<"th trial with rate of"<<guess_measurement_bucket[guess_time_].rate<<endl;
 #endif
                     setRate(guess_measurement_bucket[guess_time_].rate);
                     guess_time_ ++;
                 } else {
 #ifdef DEBUG
-                    cerr<<"Monitor "<<current_monitor<<"is in recording state, waiting result for recording to come back"<<endl;
+                    //cerr<<"Monitor "<<current_monitor<<"is in recording state, waiting result for recording to come back"<<endl;
 #endif
                     setRate(base_rate_);
                     move_stat.reference_monitor = current_monitor;
@@ -239,7 +239,7 @@ class PCC : public CCC {
             case MOVING:
                 // TODO: should handle how we move and how we record utility as well
 #ifdef DEBUG
-                cerr<<"monitor "<<current_monitor<<"is in moving state setting rate to"<<move_stat.target_rate<<endl;
+                //cerr<<"monitor "<<current_monitor<<"is in moving state setting rate to"<<move_stat.target_rate<<endl;
 #endif
                 setRate(move_stat.target_rate);
                 base_rate_ = move_stat.target_rate;
@@ -248,7 +248,7 @@ class PCC : public CCC {
                 }
                 if (base_rate_ < kMinRateMbps) {
 #ifdef DEBUG
-                    cerr<<"trying to set rate below min rate in moving phase just decided, enter guessing"<<endl;
+                    //cerr<<"trying to set rate below min rate in moving phase just decided, enter guessing"<<endl;
 #endif
                     base_rate_ = kMinRateMbps;
                     setRate(base_rate_);
@@ -263,7 +263,7 @@ class PCC : public CCC {
                 break;
             case HIBERNATE:
 #ifdef DEBUG
-                cerr<<"Hibernating, setting it to really low rate"<<endl;
+                //cerr<<"Hibernating, setting it to really low rate"<<endl;
 #endif
                 m_iMSS = 100;
                 mss = 100;
@@ -334,7 +334,7 @@ class PCC : public CCC {
         measurement_intervals_++;
         ConnectionState old_state;
 #ifdef DEBUG
-        cerr<<"Monitor "<<endMonitor<<" ended with utility "<<curr_utility<<"total "<<total<<"loss pkt"<<loss<<endl;
+        //cerr<<"Monitor "<<endMonitor<<" ended with utility "<<curr_utility<<"total "<<total<<"loss pkt"<<loss<<endl;
 #endif
         // TODO we should keep track of all monitors and closely mointoring RTT
         // and utility change between monitor
@@ -356,7 +356,7 @@ class PCC : public CCC {
 
             if(stop_flag) {
 #ifdef DEBUG
-                cerr<<"Emergency stop"<<endl;
+                //cerr<<"Emergency stop"<<endl;
 #endif
                 state_ = SEARCH;
                 guess_measurement_bucket.clear();
@@ -381,7 +381,7 @@ class PCC : public CCC {
                 //    //if(recent_end_stat.rtt/ rtt > 1.2 || recent_end_stat.rtt / rtt <0.8){
                 //    if(recent_end_stat.rtt/ rtt < 0.6){
                 //    //if(recent_end_stat.rtt/ rtt < 0.7){
-                //        cerr<<"RTT deviation severe, halving rate and re-probing"<<endl;
+                //        //cerr<<"RTT deviation severe, halving rate and re-probing"<<endl;
                 //        state_ = SEARCH;
                 //        guess_measurement_bucket.clear();
                 //        base_rate_ = base_rate_ * 0.5;
@@ -424,7 +424,7 @@ class PCC : public CCC {
                 // When doing search (calculating the results and stuff), onmonitorends should do nothing
                 // and ignore the monitor that ended
 #ifdef DEBUG
-                cerr<<"monitor"<<endMonitor<<
+                //cerr<<"monitor"<<endMonitor<<
                     "ends in search state, this should not happen often"<<endl;
 #endif
                 break;
@@ -438,7 +438,7 @@ class PCC : public CCC {
                 //} else {
                 //    //if(recent_end_stat.rtt/ rtt > 1.2 || recent_end_stat.rtt / rtt <0.8){
                 //    if(recent_end_stat.rtt/ rtt < 0.8){
-                //        cerr<<"RTT deviation severe, halving rate and re-probing"<<endl;
+                //        //cerr<<"RTT deviation severe, halving rate and re-probing"<<endl;
                 //        state_ = SEARCH;
                 //        guess_measurement_bucket.clear();
                 //        base_rate_ = base_rate_ * 0.6;
@@ -459,12 +459,12 @@ class PCC : public CCC {
                 all_ready = true;
 
 #ifdef DEBUG
-                cerr<<"checking if all recording ready at monitor"<<current<<endl;
+                //cerr<<"checking if all recording ready at monitor"<<current<<endl;
 #endif
                 for (int i=0; i<number_of_probes_; i++) {
                     if (guess_measurement_bucket[i].monitor == endMonitor) {
 #ifdef DEBUG
-                        cerr<<"found matching monitor"<<endMonitor<<endl;
+                        //cerr<<"found matching monitor"<<endMonitor<<endl;
 #endif
                         guess_measurement_bucket[i].utility = curr_utility;
                         guess_measurement_bucket[i].loss_rate = loss_rate;
@@ -591,7 +591,7 @@ class PCC : public CCC {
                         //cout<<"decide "<<change<<endl;
                         //if(abs(change)/base_rate_ > 0.5 && change <0) {change = change/abs(change)*0.5*base_rate_;}
 #ifdef DEBUG
-                        cerr<<"all record is acquired and ready to change by "<<change<<endl;
+                        //cerr<<"all record is acquired and ready to change by "<<change<<endl;
 #endif
                         if(change/base_rate_<=0.1) {
                             state_ = SEARCH;
@@ -621,12 +621,12 @@ class PCC : public CCC {
                     // somethign really bad should have happened
 
 #ifdef DEBUG
-                    cerr<<"end monitor:"<<endMonitor<<"is larger than the target monitor: "<<move_stat.target_monitor<<endl;
+                    //cerr<<"end monitor:"<<endMonitor<<"is larger than the target monitor: "<<move_stat.target_monitor<<endl;
 #endif
                 }
                 if(endMonitor == move_stat.target_monitor) {
 #ifdef DEBUG
-                    cerr<<"find the right monitor"<<endMonitor<<endl;
+                    //cerr<<"find the right monitor"<<endMonitor<<endl;
 #endif
                     move_stat.target_utility = curr_utility;
                     move_stat.target_loss_rate = loss_rate;
@@ -645,18 +645,18 @@ class PCC : public CCC {
                         overall_total = move_stat.reference_total_pkt + move_stat.target_loss_pkt;
                         double overall_loss_rate = overall_loss/overall_total;
                         //if(overall_loss_rate >= 0.05) {
-                        //   cerr<<"detect"<<overall_loss_rate<<" refernece loss "<<move_stat.reference_loss_rate<<"target loss rate"<<move_stat.target_loss_rate<<endl;
+                        //   //cerr<<"detect"<<overall_loss_rate<<" refernece loss "<<move_stat.reference_loss_rate<<"target loss rate"<<move_stat.target_loss_rate<<endl;
                         //   double loss_rate_to_use = (move_stat.reference_loss_rate>move_stat.target_loss_rate)?move_stat.reference_loss_rate:move_stat.target_loss_rate;
                         //   move_stat.reference_utility = utility(move_stat.reference_total_pkt, move_stat.reference_total_pkt*loss_rate_to_use, move_stat.reference_time, move_stat.reference_rtt,
                         //                   move_stat.reference_latency_info);
                         //   move_stat.target_utility = utility(move_stat.target_total_pkt, move_stat.target_total_pkt*loss_rate_to_use, move_stat.target_time, move_stat.target_rtt,
                         //                   move_stat.target_latency_info);
-                        //   cerr<<"loss rate to use is "<<loss_rate_to_use<<"utility after calculation is "<<move_stat.target_utility<<" "<<move_stat.reference_utility<<endl;
+                        //   //cerr<<"loss rate to use is "<<loss_rate_to_use<<"utility after calculation is "<<move_stat.target_utility<<" "<<move_stat.reference_utility<<endl;
                         //}
 
                         double change = decide(move_stat.reference_utility, move_stat.target_utility,
                                                move_stat.reference_rate, move_stat.target_rate, false);
-                        cerr<<"change for move is "<<change<<endl;
+                        //cerr<<"change for move is "<<change<<endl;
                         bool second_guess = false;
                         if((move_stat.reference_rate - move_stat.target_rate) * (move_stat.reference_loss_rate - move_stat.target_loss_rate) <0
                             && (abs(move_stat.reference_loss_pkt - move_stat.target_loss_pkt) > 2 || overall_loss_rate >= 0.05)) {
@@ -668,7 +668,7 @@ class PCC : public CCC {
                            
                         }
                         if (second_guess) {
-                                cerr<<"second guess"<<endl;
+                                //cerr<<"second guess"<<endl;
                                 move_stat.target_monitor = -1;
                                 state_ = SEARCH;
                                 trend_count_ = 2;
@@ -679,8 +679,8 @@ class PCC : public CCC {
 
                         } else {
                             if (change * move_stat.change <= 0) {
-                                cerr<<"direction changed"<<endl;
-                                cerr<<"change is "<<change<<" old change is "<<move_stat.change<<endl;
+                                //cerr<<"direction changed"<<endl;
+                                //cerr<<"change is "<<change<<" old change is "<<move_stat.change<<endl;
                                 // the direction is different, need to move to old rate start to re-guess
                                 //base_rate_ = move_stat.reference_rate;
                                 base_rate_ = change + base_rate_;
@@ -692,7 +692,7 @@ class PCC : public CCC {
                                 guess_measurement_bucket.clear();
                                 number_of_probes_ = 4;
                             } else {
-                                cerr<<"direction same, keep moving with change of "<<change<<endl;
+                                //cerr<<"direction same, keep moving with change of "<<change<<endl;
                                 if(change/base_rate_<=0.1) {
                                     base_rate_ = change + base_rate_;
                                     setRate(base_rate_);
@@ -746,7 +746,7 @@ class PCC : public CCC {
                 }
                 setRate(base_rate_);
 #ifdef DEBUG
-                cerr<<"coming out of comma with base rate of"<<base_rate_<<endl;
+                //cerr<<"coming out of comma with base rate of"<<base_rate_<<endl;
 #endif
                 guess_measurement_bucket.clear();
                 state_ = SEARCH;
@@ -854,7 +854,7 @@ class PCC : public CCC {
         //cout<<change<<endl;
 
 #ifdef DEBUG
-        cerr<<"change before force to boundary "<< change<<endl;
+        //cerr<<"change before force to boundary "<< change<<endl;
 #endif
 
         double ratio = kBoundaryIncrement*boundary_amplifier + kInitialBoundary;
@@ -898,9 +898,9 @@ class PCC : public CCC {
             cout << "computed change: " << change << endl;
         }
 #ifdef DEBUG
-        cerr<<"change before force to min change is "<< change<<endl;
-        cerr<<"gradient is "<< avg_gradient()<<endl;
-        cerr<<"amplifier"<<amplifier<<endl;
+        //cerr<<"change before force to min change is "<< change<<endl;
+        //cerr<<"gradient is "<< avg_gradient()<<endl;
+        //cerr<<"amplifier"<<amplifier<<endl;
 #endif
 
         //if ((change >= 0) && (change < getMinChange())) change = getMinChange();
@@ -919,7 +919,7 @@ class PCC : public CCC {
 
         //if (change == 0) cout << "Change is zero!" << endl;
 #ifdef DEBUG
-        cerr<<"change is "<<change<<endl;
+        //cerr<<"change is "<<change<<endl;
 #endif
         return change;
 
@@ -1009,19 +1009,19 @@ class PCC : public CCC {
         }
 
 #ifdef DEBUG
-        cerr << "set rate: " << rate_ << " --> " << mbps << endl;
+        //cerr << "set rate: " << rate_ << " --> " << mbps << endl;
 #endif
         if (state_ == START) {
             if (mbps < kMinRateMbpsSlowStart) {
 #ifdef DEBUG
-                cerr << "rate is mimimal at slow start, changing to " << kMinRateMbpsSlowStart
+                //cerr << "rate is mimimal at slow start, changing to " << kMinRateMbpsSlowStart
                      << " instead" << endl;
 #endif
                 mbps = kMinRateMbpsSlowStart;
             }
         } else if (mbps < kMinRateMbps * (1-getkDelta())) {
 #ifdef DEBUG
-            cerr << "rate is mimimal, changing to " << kMinRateMbps << " instead" << endl;
+            //cerr << "rate is mimimal, changing to " << kMinRateMbps << " instead" << endl;
 #endif
             mbps = kMinRateMbps * (1-getkDelta());
         }
@@ -1029,12 +1029,12 @@ class PCC : public CCC {
         if (mbps > kMaxRateMbps) {
             mbps = kMaxRateMbps;
 #ifdef DEBUG
-            cerr << "rate is maximal, changing to " << kMaxRateMbps << " instead" << endl;
+            //cerr << "rate is maximal, changing to " << kMaxRateMbps << " instead" << endl;
 #endif
         }
         rate_ = mbps;
         m_dPktSndPeriod = (m_iMSS * 8.0) / mbps;
-        //cerr << "setting rate: mbps = " << mbps << endl;
+        ////cerr << "setting rate: mbps = " << mbps << endl;
     }
 
     double rate() const {
@@ -1109,7 +1109,7 @@ class PCC : public CCC {
             //rtt_penalty = -0.2;
         }
         //rtt_penalty = int(latency_info * 100) / 100.0;
-        //cerr<<"new rtt penalty is "<<rtt_penalty<<endl;
+        ////cerr<<"new rtt penalty is "<<rtt_penalty<<endl;
         //if (rtt_penalty > 2) rtt_penalty  = 2;
         //if (rtt_penalty < -2) rtt_penalty  = -2;
         exponent_ = 1;
@@ -1159,10 +1159,10 @@ class PCC : public CCC {
                                            *m_iMSS/1024/1024*8/time,
                                            kExponent) - (1*loss_contribution + rtt_contribution)*m_iMSS/1024/1024*8/time;
 #ifdef DEBUG
-        cerr<<"total "<<
+        //cerr<<"total "<<
             total<<"loss contri"<<loss_contribution<<"rtt contr"<<rtt_contribution<<"time "<<time<<"norm measurement"<<norm_measurement_interval<<endl;
-        cerr<<"rtt is "<<rtt<<"loss rate is "<<loss_rate<<"avg loss rate is "<<avg_loss<<endl;
-        cerr<<"latency info is "<<latency_info<<endl;
+        //cerr<<"rtt is "<<rtt<<"loss rate is "<<loss_rate<<"avg loss rate is "<<avg_loss<<endl;
+        //cerr<<"latency info is "<<latency_info<<endl;
 #endif
 
         return utility;
