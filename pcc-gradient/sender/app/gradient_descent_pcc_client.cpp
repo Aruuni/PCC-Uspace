@@ -161,7 +161,6 @@ int main(int argc, char* argv[])
     if (durationSeconds > 0) {
         thread([durationSeconds]() {
             this_thread::sleep_for(chrono::seconds(durationSeconds));
-            cout << "Duration (" << durationSeconds << "s) elapsed. Exiting." << endl;
             exit(0);
         }).detach();
     }
@@ -214,7 +213,7 @@ DWORD WINAPI monitor(LPVOID s)
             << perf.mbpsSendRate            << ","
             << perf.msRTT                   << "," 
             << perf.pktSent                 << ","  
-            << perf.pktSndLoss              << ","
+            << perf.pktSndLoss
             <<
         endl;
     }

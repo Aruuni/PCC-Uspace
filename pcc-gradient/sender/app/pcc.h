@@ -107,10 +107,10 @@ class PCC : public CCC {
         double_check = 1;
         loss_ignore_count = 50;
         last_stop_monitor = -1;
-        cerr << "new Code!!!" << endl;
-        cerr << "configuration: alpha = " << alpha_ << ", beta = " << beta_   <<
-             ", exponent = " << exponent_ <<
-             ", factor = " << factor_ << ", step = " << step_ << endl;
+        //cerr << "new Code!!!" << endl;
+        //cerr << "configuration: alpha = " << alpha_ << ", beta = " << beta_   <<
+        //     ", exponent = " << exponent_ <<
+        //     ", factor = " << factor_ << ", step = " << step_ << endl;
 
         /*
         if (!latency_mode) {
