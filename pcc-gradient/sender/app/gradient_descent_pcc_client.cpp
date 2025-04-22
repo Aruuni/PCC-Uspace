@@ -131,9 +131,10 @@ int main(int argc, char* argv[])
     UDTSOCKET client = UDT::socket(local->ai_family,
                                    local->ai_socktype,
                                    local->ai_protocol);
-    UDT::setsockopt(client, 0, UDT_CC,
-                    new CCCFactory<PCC>,
-                    sizeof(CCCFactory<PCC>));
+    UDT::setsockopt(client, 0, UDT_CC, new CCCFactory<PCC>, sizeof(CCCFactory<PCC>));
+    UDT::setsockopt(client, 0, UDT_MSS, new int(1500), sizeof(int));
+    UDT::setsockopt(client, 0, UDT_RCVBUF, new int(10000000), sizeof(int));
+    UDT::setsockopt(client, 0, UDP_RCVBUF, new int(10000000), sizeof(int));
 #ifdef WIN32
     UDT::setsockopt(client, 0, UDT_MSS, new int(1052), sizeof(int));
 #endif
