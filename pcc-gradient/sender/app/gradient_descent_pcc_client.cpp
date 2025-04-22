@@ -195,7 +195,7 @@ DWORD WINAPI monitor(LPVOID s)
 {
     UDTSOCKET u = *(UDTSOCKET*)s;
     UDT::TRACEINFO perf;
-    cout << "bandwidth,rtt,total_packets,packets_lost" << endl;
+    cout << "time,bandwidth,rtt,total_packets,packets_lost" << endl;
     unsigned int i = 0;
     while (!stopRequested) {
         #ifndef WIN32
