@@ -128,9 +128,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    UDTSOCKET client = UDT::socket(local->ai_family,
-                                   local->ai_socktype,
-                                   local->ai_protocol);
+    UDTSOCKET client = UDT::socket(local->ai_family, local->ai_socktype, local->ai_protocol);
     UDT::setsockopt(client, 0, UDT_CC, new CCCFactory<PCC>, sizeof(CCCFactory<PCC>));
     UDT::setsockopt(client, 0, UDT_MSS, new int(1500), sizeof(int));
     UDT::setsockopt(client, 0, UDT_RCVBUF, new int(10000000), sizeof(int));
@@ -196,7 +194,7 @@ DWORD WINAPI monitor(LPVOID s)
 {
     UDTSOCKET u = *(UDTSOCKET*)s;
     UDT::TRACEINFO perf;
-    cout << "time,bandwidth,rtt,total_packets,packets_lost" << endl;
+    cout << "time,bandwidth,rtt,cwnd,total_packets,packets_lost" << endl;
     unsigned int i = 0;
     while (!stopRequested) {
         #ifndef WIN32
@@ -213,6 +211,7 @@ DWORD WINAPI monitor(LPVOID s)
             << perf.msTimeStamp / 1000.0    << ","
             << perf.mbpsSendRate            << ","
             << perf.msRTT                   << "," 
+            << perf.pktCongestionWindow     << ","
             << perf.pktSent                 << ","  
             << perf.pktSndLoss
             <<
